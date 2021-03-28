@@ -1,17 +1,72 @@
 version: 2.1
 jobs:
-  build:
+  Installation:
     docker:
-      - image: cimg/node:14.10.1 # the primary container, where your job's commands are run
+      - image: circleci/node:14.10.1
     steps:
-      - checkout # check out the code in the project directory
+      - checkout
       - restore_cache:
-          key: yarn-packages-{{checksum "yarn.lock"}}
-      - run:
-          name: install node
-          command: yarn global add node-gyp && yarn install
-      - run: yarn format:check
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
+            - yarn-packages
+      - run: yarn global add node-gyp && yarn install
       - save_cache:
-          key: yarn-packages-{{checksum "yarn.lock"}}
+          key: yarn-packages-{{ checksum "yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
           paths:
-            - ./node_module
+            - ./node_modules
+  Test:
+    docker:
+      - image: circleci/node:14.10.1
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
+      - run:
+          name: Format check
+          command: yarn format:check
+  Build:
+    docker:
+      - image: circleci/node:14.10.1
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
+      - run:
+          name: Build Prod
+          command : yarn run build
+      - run:
+          name: Copy to workspace
+          command: |
+            cp dist/ /tmp/dist -r
+      - store_artifacts:
+          path: /tmp/dist
+      - persist_to_workspace:
+          root: /tmp
+          paths:
+            - dist
+  Netlify:
+    docker:
+      - image: circleci/node:14.10.1
+    working_directory: ~/deploy-netlfify
+    steps:
+      - attach_workspace:
+          at: /tmp
+      - run:
+          name: Deploy
+          command: |
+            sudo npm install -g --silent netlify-cli
+            netlify deploy --prod --auth $NETLIFY_AUTH_TOKEN --dir=/tmp/dist --site $NETLIFY_SITE_ID
+
+workflows:
+  Build_Test_Deploy:
+    jobs:
+      - Installation
+      - Test
+      - Build:
+          requires:
+            - Installation
+      - Netlify:
+          requires:
+            - Build
