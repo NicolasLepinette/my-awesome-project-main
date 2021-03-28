@@ -43,16 +43,15 @@ jobs:
       - restore_cache:
           keys:
             - yarn-packages-{{ checksum "yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
+      - run:
+          name: Build Prod
+          command : yarn build
 
   Netlify:
     docker:
       - image: circleci/node:14.10.1
     working_directory: ~/deploy-netlify
     steps:
-      - run:
-          name: Build Prod
-          command : yarn build
-
       - run:
           name: Deploy
           command: |
