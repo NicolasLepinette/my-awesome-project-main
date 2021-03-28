@@ -23,11 +23,11 @@ jobs:
           keys:
             - yarn-packages-{{ checksum "yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
       - run:
+          name: Format write
+          command: yarn format:write      
+      - run:
           name: Format check
           command: yarn format:check --write    
-      - run:
-          name: Start
-          command: npm start
       - run:
           name: Test
           command: yarn test
