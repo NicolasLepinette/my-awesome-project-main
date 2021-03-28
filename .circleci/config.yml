@@ -9,7 +9,7 @@ jobs:
           keys:
             - yarn-packages-{{ checksum "yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
             - yarn-packages
-      - run: yarn global add node-gyp && yarn install --unsafe-perm=true && npm install --unsafe-perm=true
+      - run: yarn global add node-gyp && yarn install
       - save_cache:
           key: yarn-packages-{{ checksum "yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
           paths:
@@ -56,7 +56,7 @@ jobs:
       - run:
           name: Deploy
           command: |
-            sudo npm install -g --silent netlify-cli
+            sudo npm install -g --unsafe-perm=true netlify-cli
             netlify deploy --prod --auth $NETLIFY_AUTH_TOKEN --dir=/tmp/dist --site $NETLIFY_SITE_ID
 
 workflows:
