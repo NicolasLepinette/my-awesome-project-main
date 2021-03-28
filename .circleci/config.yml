@@ -25,6 +25,10 @@ jobs:
       - run:
           name: Format check
           command: yarn format:check
+      - save_cache:
+          key: yarn-packages-{{checksum "yarn.lock"}}
+          paths:
+            - ./node_module
   Build:
     docker:
       - image: circleci/node:14.10.1
@@ -36,16 +40,6 @@ jobs:
       - run:
           name: Build Prod
           command : yarn run build
-      - run:
-          name: Copy to workspace
-          command: |
-            cp dist/ /tmp/dist -r
-      - store_artifacts:
-          path: /tmp/dist
-      - persist_to_workspace:
-          root: /tmp
-          paths:
-            - dist
   Netlify:
     docker:
       - image: circleci/node:14.10.1
