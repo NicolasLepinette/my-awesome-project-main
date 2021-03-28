@@ -57,7 +57,9 @@ workflows:
   Build_Test_Deploy:
     jobs:
       - Installation
-      - Test
+      - Test:
+          requires:
+            - Installation
       - Build:
           requires:
             - Installation
