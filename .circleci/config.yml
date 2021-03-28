@@ -9,7 +9,7 @@ jobs:
           keys:
             - yarn-packages-{{ checksum "yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
             - yarn-packages
-      - run: yarn global add node-gyp && yarn install && sudo yarn global add netlify-cli --unsafe-perm=true
+      - run: yarn global add node-gyp && yarn install --unsafe-perm=true && npm install --unsafe-perm=true
       - save_cache:
           key: yarn-packages-{{ checksum "yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
           paths:
