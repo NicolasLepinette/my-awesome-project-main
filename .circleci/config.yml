@@ -24,7 +24,10 @@ jobs:
             - yarn-packages-{{ checksum "yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
       - run:
           name: Format check
-          command: yarn format:check
+          command: yarn format:check --write
+      - run:
+          name: Test
+          command: yarn test
       - save_cache:
           key: yarn-packages-{{checksum "yarn.lock"}}
           paths:
