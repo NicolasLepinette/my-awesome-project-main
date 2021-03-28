@@ -15,8 +15,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "format:write": "prettier --write \"**/*.{js,vue,json,ts,tsx,md,yml,html}\"",
-    "format:check": "prettier --list-different \"**/*.{js,vue,json,ts,tsx,md,yml,html}\""
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format:check": "prettier --list-different \"src/**/*.ts\" \"test/**/*.ts\""
   },
   "eslintConfig": {
     "extends": [
