@@ -52,8 +52,7 @@ jobs:
       - run:
           name: Build Prod
           command : yarn build
-      - attach_workspace:
-          at: /tmp
+
       - run:
           name: Deploy
           command: |
