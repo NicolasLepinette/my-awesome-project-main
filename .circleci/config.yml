@@ -46,7 +46,6 @@ jobs:
       - run:
           name: Build Prod
           command : yarn build
-
   Netlify:
     docker:
       - image: circleci/node:14.10.1
@@ -57,7 +56,6 @@ jobs:
           command: |
             sudo npm install -g --unsafe-perm=true netlify-cli
             netlify deploy --prod --auth $NETLIFY_AUTH_TOKEN --site $NETLIFY_SITE_ID
-
 workflows:
   Build_Test_Deploy:
     jobs:
