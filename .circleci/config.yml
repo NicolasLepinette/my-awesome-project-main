@@ -23,9 +23,6 @@ jobs:
           keys:
             - yarn-packages-{{ checksum "yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
       - run:
-          name: Start
-          command: yarn start
-      - run:
           name: Format check
           command: yarn format:check --write
       - run:
