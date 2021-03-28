@@ -1,3 +1,4 @@
+version: 2.1
 workflows:
   starter:
     jobs:
@@ -8,10 +9,6 @@ workflows:
       - checks:
           requires:
             - yarn
-
-  tests:
-    jobs:
-      - checks
   yarn:
     docker:
       - image: circleci/node:12
