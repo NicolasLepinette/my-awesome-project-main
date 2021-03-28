@@ -42,7 +42,7 @@ jobs:
             - yarn-packages-{{ checksum "yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
       - run:
           name: Build Prod
-          command : yarn run build
+          command : yarn run build --skip-integrity-check 
   Netlify:
     docker:
       - image: circleci/node:14.10.1
