@@ -1,18 +1,41 @@
-version: 2.1
-jobs:
-  build:
+workflows:
+  starter:
+    jobs:
+      - yarn
+  install:
+    jobs:
+      - yarn
+      - checks:
+          requires:
+            - yarn
+
+  tests:
+    jobs:
+      - checks
+  yarn:
     docker:
-      - image: 'circleci/node:12' # the primary container, where your job's commands are run
+      - image: circleci/node:12
     steps:
-      - checkout # check out the code in the project directory
+      - checkout
       - restore_cache:
-          key: yarn-packages-{{checksum "yarn.lock"}}
-      - run:
-          name: install node
-          command: yarn global add node-gyp && yarn install
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+      - run: yarn global add node-gyp && yarn install
+      - save_cache:
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - ./node_modules
+
+  checks:
+    docker:
+      - image: circleci/node:12
+    steps:
+      - checkout
+      - restore_cache:
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+      - run: yarn lint
       - run: yarn format:check
       - run: yarn test:ci
       - save_cache:
-          key: yarn-packages-{{checksum "yarn.lock"}}
+          key: yarn-packages-{{ checksum "yarn.lock" }}
           paths:
-            - ./node_module
+            - ./node_modules
